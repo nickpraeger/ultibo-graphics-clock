@@ -1,0 +1,81 @@
+unit Thread2;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  GlobalConfig,
+  GlobalConst,
+  GlobalTypes,
+  Platform,
+  Threads,
+  SysUtils,
+  Classes,
+  Ultibo,
+  Console,
+  Font,
+  GraphicsConsole,
+  DateUtils,
+  Thread1,
+  VGShapes,
+  VC4;
+
+type
+TThread2Object = class(TThread)
+public
+procedure Execute; override;
+end;
+
+
+
+implementation
+procedure TThread2Object.Execute;
+
+var
+Window:TWindowHandle;
+WindowWidth, WindowHeight: LongInt;
+
+begin
+Window:=GraphicsWindowCreate(ConsoleDeviceGetDefault,CONSOLE_POSITION_FULL);
+WindowWidth:=GraphicsWindowGetWidth(Window);
+WindowHeight:=GraphicsWindowGetHeight(Window);
+
+VGShapesInit(WindowWidth,WindowHeight);
+VGShapesStart(WindowWidth,WindowHeight);
+VGShapesBackground(0,0,0);
+VGShapesEnd;
+
+while not DirectoryExists('C:\') do
+      begin
+           Sleep(100);
+      end;
+VGShapesStart(WindowWidth,WindowHeight);
+VGShapesBackground(0,0,0);
+VGShapesImage(0,0,WindowWidth, WindowHeight,'LandRover.jpg');
+VGShapesEnd;
+Sleep(5000);
+
+while true do
+   begin
+    VGShapesStart(WindowWidth,WindowHeight);
+    VGShapesBackground(0,0,0);
+    VGShapesFill(255,255,255,1);
+    VGShapesTextMid(WindowWidth/2,(WindowHeight * 0.45),(FormatDateTime('hh:mm',Now)),VGShapesSansTypeface,WindowWidth div 6);
+
+    VGShapesFill(255,255,255,1);
+    VGShapesTextMid(WindowWidth/2,(WindowHeight * 0.3),(FormatDateTime('dddd dd mmm yyy',Now)),VGShapesSansTypeface,WindowWidth div 40);
+
+    VGShapesFill(255,255,255,1);
+    VGShapesTextMid(WindowWidth/2,(WindowHeight * 0.1),s,VGShapesSansTypeface,WindowWidth div 40);
+
+    VGShapesEnd;
+    ThreadSleep(1000);
+
+
+   end;
+VGShapesFinish;
+BCMHostDeinit;
+threadhalt(0);
+end;
+end.
