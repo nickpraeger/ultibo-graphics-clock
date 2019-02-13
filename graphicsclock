@@ -1,0 +1,27 @@
+program GraphicsClock;
+
+{$mode objfpc}{$H+}
+
+uses
+  RaspberryPi,
+  GlobalConfig,
+  GlobalConst,
+  GlobalTypes,
+  Platform,
+  Threads,
+  SysUtils,
+  Classes,
+  Ultibo,
+  Console,
+  Thread1,
+  Thread2;
+
+var
+ Thread1Handle:TThreadHandle;
+ Thread2Object:TThread2Object;
+
+begin
+ Thread1Handle:=BeginThread(@Thread1Execute,nil,Thread1Handle,THREAD_STACK_DEFAULT_SIZE);
+ Thread2Object:=TThread2Object.Create(False,THREAD_STACK_DEFAULT_SIZE);
+ ThreadHalt(0);
+end.
