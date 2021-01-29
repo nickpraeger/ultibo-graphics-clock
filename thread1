@@ -43,7 +43,7 @@ OneMonth:int64 =30*24*60*60*10000000;
 OneDay:int64 =24*60*60*10000000;
 OneHour:int64 =60*60*10000000;
 OneMin:int64 =60*10000000;
-OneSec:int64 =10000000;
+OneSec:int64 = 10000000;
 
 
 
@@ -57,7 +57,6 @@ adjMonth: int64 =0;
 adjDay: int64 =0;
 adjHour: int64 =0;
 adjMin: int64 =0;
-adjSec: int64 =0;
 
 procedure Log (message : string);
 begin
@@ -72,7 +71,7 @@ begin
 
    ThreadSetName(GetCurrentThreadId,'Example Thread1');
  {see if the RTC is available}
-
+ SetCurrentTimezone('GMT Standard Time');
  while RTCAvailable = FALSE do
       begin
         Log('RTC Not Available' + DateTimeToStr(Now));
@@ -104,64 +103,58 @@ begin
         #0:  begin     {if shift is held for increasing values, read second character}
                   ConsoleGetKey(Character,nil);
                   end;
-        'Y':  begin
-                  Log('Y pressed, Increase year by 1');
-                  adjYear:= adjYear+1;
-                  end;
-        'N': begin
-                  Log('N pressed, Increase month by 1');
-                  adjMonth:= adjMonth+1;
-                  end;
-        'D': begin
-                  Log('D pressed, Increase day by 1');
-                  adjDay:=adjDay+1;
-                  end;
-        'H': begin
-                  Log('H pressed, Increase hour by 1');
-                  adjHour:=adjHour+1;
-                  end;
-        'M': begin
-                  Log('M pressed, Increase minute by 1');
-                  adjMin:=adjMin+1;
-                  end;
-        'S': begin
-                  Log('S pressed, Increase second by 1');
-                  adjSec:=adjSec+1;
-                  end;
-        'y': begin
-                  Log('y pressed, Decrease year by 1');
-                  adjYear:= adjYear-1;
-                  end;
-      'n': begin
-                  Log('n pressed, Decrease month by 1');
-                  adjMonth:=adjMonth-1;
-                  end;
-      'd':  begin
-                  Log('d pressed, Decrease day by 1');
-                  adjDay:=adjDay-1;
-                  end;
-      'h': begin
-                  Log('h pressed, Decrease hour by 1');
-                  adjHour:=adjHour-1;
-                  end;
-      'm': begin
-                  Log('m pressed, Decrease minute by 1');
-                  adjMin:=adjMin-1;
-                  end;
-      's': begin
-                  Log('s pressed, Decrease second by 1');
-                  adjSec:=adjSec-1;
-                  end;
+        '7':  begin
+                adjYear:= adjYear+1;
+                Log('Change year by ' + IntToStr(adjYear));
+                end;
+        '8': begin
+                adjMonth:= adjMonth+1;
+                Log('Change month by ' + IntToStr(adjMonth));
+                end;
+        '9': begin
+                adjDay:= adjDay+1;
+                Log('Change day by ' + IntToStr(adjDay));
+                end;
+        '1': begin
+                  adjHour:= adjHour+1;
+                Log('Change hour by ' + IntToStr(adjHour));
+                end;
+        '3': begin
+                adjMin:= adjMin+1;
+                Log('Change minute by ' + IntToStr(adjMin));
+                end;
+
+        '4': begin
+                adjYear:= adjYear-1;
+                Log('Change year by ' + IntToStr(adjYear));
+                end;
+      '5': begin
+              adjMonth:= adjMonth-1;
+              Log('Change month by ' + IntToStr(adjMonth));
+              end;
+      '6':  begin
+              adjDay:= adjDay-1;
+              Log('Change day by ' + IntToStr(adjDay));
+              end;
+      '0': begin
+              adjHour:= adjHour-1;
+            Log('Change hour by ' + IntToStr(adjHour));
+            end;
+      '.': begin
+           adjMin:= adjMin-1;
+           Log('Change minute by ' + IntToStr(adjMin));
+           end;
+
       #13: begin
-                  adjustment:=adjYear*OneYear+adjMonth*OneMonth+adjDay*OneDay+adjHour*OneHour+adjMin*OneMin+adjSec*OneSec;
-                  Log('Enter to reboot and change time by (y/m/d h:m:s): ' + IntToStr(adjYear) + '/' + IntToStr(adjMonth) + '/' + IntToStr(adjDay) + ' ' + IntToStr(adjHour) + ':' + IntToStr(adjMin) + ':' + IntToStr(adjSec));
+                  adjustment:=adjYear*OneYear+adjMonth*OneMonth+adjDay*OneDay+adjHour*OneHour+adjMin*OneMin;
+                  Log('Enter to change time by: ' + IntToStr(adjYear) + '/' + IntToStr(adjMonth) + '/' + IntToStr(adjDay) + ' ' + IntToStr(adjHour) + ':' + IntToStr(adjMin));
                   if ConsoleGetKey(Character,nil) then
                   begin
                      if Character = #13  then begin
                         newDateTime:= SysRtcGetTime+adjustment;
                         RTCSetTime(newDateTime);
-                        Log('Rebooting...');
-                        SystemRestart(1000)//reboot
+                        ClockSetTime(newDateTime,True);
+                       Log('');
                         end
                      else begin
                           Log('Adjustments cleared');
@@ -171,7 +164,6 @@ begin
                           adjDay:=0;
                           adjHour:=0;
                           adjMin:=0;
-                          adjSec:=0;
                           sleep(500);
                           Log('');
                           end;
@@ -185,3 +177,4 @@ begin
 
     end;
    end.
+
